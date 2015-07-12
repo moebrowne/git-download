@@ -23,7 +23,7 @@ fi
 
 # Check we were given a repo name
 if [ "$REPO_NAME" = "" ]; then
-	echo "Repo name is required, please specify with the --repo flag"
+	echo "Repo name is required, please specify with the --repo or -r flag"
 	exit 1
 fi
 
@@ -43,7 +43,7 @@ fi
 
 # Check we were given a directory to download to
 if [ "$DOWN_DIR" = "" ]; then
-	echo "Download directory is required, please specify with the --directory flag"
+	echo "Download directory is required, please specify with the --directory or -d flag"
 	exit 1
 fi
 
