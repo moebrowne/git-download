@@ -45,7 +45,7 @@ if [[ -d "$DOWN_DIR" ]]; then
 	read -r -p "Are you sure? [y/N] " DOWN_DIR_DELETE
 	DOWN_DIR_DELETE=${DOWN_DIR_DELETE,,}    # tolower
 	if [[ $DOWN_DIR_DELETE =~ ^(yes|y)$ ]]; then
-	echo "Deleting $DOWN_DIR"
+		echo "Deleting $DOWN_DIR"
 		rm -rf "$DOWN_DIR"
 	fi
 fi
