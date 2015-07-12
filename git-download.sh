@@ -16,7 +16,6 @@ if [ "${BASH_REMATCH[2]}" != "" ]; then
 	# Determine the repos name
 	regexRepoName=':([^/]+)/(.*)\.git'
 	[[ ${BASH_REMATCH[2]} =~ $regexRepoName ]]
-	echo "${BASH_REMATCH[@]}"
 	if [ "${BASH_REMATCH[1]}" != "" ]; then
 		REPO_NAME="${BASH_REMATCH[2]}"
 	fi
