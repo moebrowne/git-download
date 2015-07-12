@@ -11,6 +11,11 @@ LIBRARY_PATH_ROOT="$DIR/libs"
 . "$LIBRARY_PATH_ROOT/usage.sh"
 . "$LIBRARY_PATH_ROOT/command_exists.sh"
 
+# If no parameters were passed show the usage
+if [ $# = 0 ]; then
+	usage
+fi
+
 # Pad the arguments
 args=" $@ "
 
