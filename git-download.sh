@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# Pad the arguments
+args=" $@ "
+
 # Config
 
 # Git executable
