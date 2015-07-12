@@ -52,3 +52,6 @@ if [[ -d "$DOWN_DIR" ]]; then
 fi
 
 "$EXEC_GIT" clone -b "$REPO_BRANCH" --single-branch "$REPO_URL" "$DOWN_DIR"
+
+# Remove the .git directory
+rm -rf "$DOWN_DIR/.git"
