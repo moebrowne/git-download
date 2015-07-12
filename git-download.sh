@@ -30,4 +30,13 @@ else
 	REPO_BRANCH="master"
 fi
 
-"$EXEC_GIT" clone -b "$REPO_BRANCH" --single-branch "$REPO_URL"
+regexRepoDirectory=' -(-directory|d) ([^ ]+) '
+[[ $args =~ $regexRepoDirectory ]]
+if [ "${BASH_REMATCH[2]}" != "" ]; then
+	DOWN_DIR="${BASH_REMATCH[2]}"
+fi
+
+# Append the repos name to the download path
+DOWN_DIR="$DOWN_DIR/$REPO_NAME"
+
+"$EXEC_GIT" clone -b "$REPO_BRANCH" --single-branch "$REPO_URL" "$DOWN_DIR"
