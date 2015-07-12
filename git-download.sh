@@ -8,7 +8,7 @@ if [[ ! -d "$DIR" ]]; then DIR="$PWD"; fi
 LIBRARY_PATH_ROOT="$DIR/libs"
 
 # Include all libraries in the libs directory
-for f in "$LIBRARY_PATH_ROOT"/*; do
+for f in "$LIBRARY_PATH_ROOT"/*.sh; do
 	# Include the directory
 	source "$f"
 done
