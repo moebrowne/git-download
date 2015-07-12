@@ -41,6 +41,12 @@ if [ "${BASH_REMATCH[2]}" != "" ]; then
 	DOWN_DIR="${BASH_REMATCH[2]}"
 fi
 
+# Check we were given a directory to download to
+if [ "$DOWN_DIR" = "" ]; then
+	echo "Download directory is required, please specify with the --directory flag"
+	exit 1
+fi
+
 # Append the repos name to the download path
 DOWN_DIR="$DOWN_DIR/$REPO_NAME"
 
