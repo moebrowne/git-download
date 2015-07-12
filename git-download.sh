@@ -8,14 +8,14 @@ args=" $@ "
 # Git executable
 EXEC_GIT="/usr/bin/git"
 
-regexArgType=' -(-repo|r) ([^ ]+) '
-[[ $args =~ $regexArgType ]]
+regexRepoURL=' -(-repo|r) ([^ ]+) '
+[[ $args =~ $regexRepoURL ]]
 if [ "${BASH_REMATCH[2]}" != "" ]; then
 	REPO_URL="${BASH_REMATCH[2]}"
 fi
 
-regexArgType=' -(-branch|b) ([^ ]+) '
-[[ $args =~ $regexArgType ]]
+regexRepoBranch=' -(-branch|b) ([^ ]+) '
+[[ $args =~ $regexRepoBranch ]]
 if [ "${BASH_REMATCH[2]}" != "" ]; then
 	REPO_BRANCH="${BASH_REMATCH[2]}"
 else
