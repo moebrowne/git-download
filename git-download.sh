@@ -47,6 +47,8 @@ if [[ -d "$DOWN_DIR" ]]; then
 	if [[ $DOWN_DIR_DELETE =~ ^(yes|y)$ ]]; then
 		echo "Deleting $DOWN_DIR"
 		rm -rf "$DOWN_DIR"
+	else
+		exit 0
 	fi
 fi
 
