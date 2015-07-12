@@ -7,9 +7,11 @@ if [[ ! -d "$DIR" ]]; then DIR="$PWD"; fi
 # Set the library root path
 LIBRARY_PATH_ROOT="$DIR/libs"
 
-# Include the generic libraries
-. "$LIBRARY_PATH_ROOT/usage.sh"
-. "$LIBRARY_PATH_ROOT/command_exists.sh"
+# Include all libraries in the libs directory
+for f in "$LIBRARY_PATH_ROOT"/*; do
+	# Include the directory
+	source "$f"
+done
 
 # If no parameters were passed show the usage
 if [ $# = 0 ]; then
