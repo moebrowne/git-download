@@ -20,3 +20,5 @@ if [ "${BASH_REMATCH[2]}" != "" ]; then
 else
 	REPO_BRANCH="master"
 fi
+
+"$EXEC_GIT" clone -b "$REPO_BRANCH" --single-branch "$REPO_URL"
