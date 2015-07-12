@@ -1,5 +1,16 @@
 #!/bin/bash
 
+# Get the source directory
+DIR="${BASH_SOURCE%/*}"
+if [[ ! -d "$DIR" ]]; then DIR="$PWD"; fi
+
+# Set the library root path
+LIBRARY_PATH_ROOT="$DIR/utils"
+
+# Include the generic libraries
+. "$LIBRARY_PATH_ROOT/usage.sh"
+. "$LIBRARY_PATH_ROOT/command_exists.sh"
+
 # Pad the arguments
 args=" $@ "
 
