@@ -12,6 +12,14 @@ regexRepoURL=' -(-repo|r) ([^ ]+) '
 [[ $args =~ $regexRepoURL ]]
 if [ "${BASH_REMATCH[2]}" != "" ]; then
 	REPO_URL="${BASH_REMATCH[2]}"
+
+	# Determine the repos name
+	regexRepoName=':([^/]+)/(.*)\.git'
+	[[ ${BASH_REMATCH[2]} =~ $regexRepoName ]]
+	echo "${BASH_REMATCH[@]}"
+	if [ "${BASH_REMATCH[1]}" != "" ]; then
+		REPO_NAME="${BASH_REMATCH[2]}"
+	fi
 fi
 
 regexRepoBranch=' -(-branch|b) ([^ ]+) '
