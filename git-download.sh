@@ -21,6 +21,12 @@ if [ "${BASH_REMATCH[2]}" != "" ]; then
 	fi
 fi
 
+# Check we were given a repo name
+if [ "$REPO_NAME" = "" ]; then
+	echo "Repo name is required, please specify with the --repo flag"
+	exit 1
+fi
+
 regexRepoBranch=' -(-branch|b) ([^ ]+) '
 [[ $args =~ $regexRepoBranch ]]
 if [ "${BASH_REMATCH[2]}" != "" ]; then
