@@ -1,87 +1,86 @@
 #!/bin/bash
 
-# Get the source directory
-DIR="${BASH_SOURCE%/*}"
-if [[ ! -d "$DIR" ]]; then DIR="$PWD"; fi
+# Usage function
+usage() {
+    echo "Usage: $0 -r|--repo <repository_url> [-b|--branch <branch_name>] -d|--directory <download_directory>"
+    echo "  -r, --repo        The URL of the repository to download"
+    echo "  -b, --branch      The branch to download [default: master]"
+    echo "  -d, --directory   The directory where the branch should be downloaded"
+    exit 1
+}
 
-# Set the library root path
-LIBRARY_PATH_ROOT="$DIR/libs"
+# Check for required dependencies
+if ! command -v git &> /dev/null; then
+    echo "Error: Git is not installed or not available in the PATH."
+    exit 1
+fi
 
-# Include all libraries in the libs directory
-for f in "$LIBRARY_PATH_ROOT"/*.sh; do
-	# Include the directory
-	source "$f"
+# Default values
+REPO_BRANCH="master"
+REPO_URL=""
+DOWN_DIR=""
+
+# Parse arguments
+while [[ $# -gt 0 ]]; do
+    case "$1" in
+        -r|--repo)
+            REPO_URL="$2"
+            shift 2
+            ;;
+        -b|--branch)
+            REPO_BRANCH="$2"
+            shift 2
+            ;;
+        -d|--directory)
+            DOWN_DIR="$2"
+            shift 2
+            ;;
+        *)
+            echo "Unknown option: $1"
+            usage
+            ;;
+    esac
 done
 
-# If no parameters were passed show the usage
-if [ $# = 0 ]; then
-	usage
+# Validate inputs
+if [[ -z "$REPO_URL" ]]; then
+    echo "Error: Repository URL is required. Use -r or --repo to specify."
+    usage
 fi
 
-# Pad the arguments
-args=" $@ "
-
-# Config
-
-# Git executable
-EXEC_GIT="/usr/bin/git"
-
-regexRepoURL=' -(-repo|r) ([^ ]+) '
-[[ $args =~ $regexRepoURL ]]
-if [ "${BASH_REMATCH[2]}" != "" ]; then
-	REPO_URL="${BASH_REMATCH[2]}"
-
-	# Determine the repos name
-	regexRepoName=':([^/]+)/(.*)\.git'
-	[[ ${BASH_REMATCH[2]} =~ $regexRepoName ]]
-	if [ "${BASH_REMATCH[1]}" != "" ]; then
-		REPO_NAME="${BASH_REMATCH[2]}"
-	fi
+if [[ -z "$DOWN_DIR" ]]; then
+    echo "Error: Download directory is required. Use -d or --directory to specify."
+    usage
 fi
 
-# Check we were given a repo name
-if [ "$REPO_NAME" = "" ]; then
-	echo "Repo name is required, please specify with the --repo or -r flag"
-	exit 1
-fi
-
-regexRepoBranch=' -(-branch|b) ([^ ]+) '
-[[ $args =~ $regexRepoBranch ]]
-if [ "${BASH_REMATCH[2]}" != "" ]; then
-	REPO_BRANCH="${BASH_REMATCH[2]}"
-else
-	REPO_BRANCH="master"
-fi
-
-regexRepoDirectory=' -(-directory|d) ([^ ]+) '
-[[ $args =~ $regexRepoDirectory ]]
-if [ "${BASH_REMATCH[2]}" != "" ]; then
-	DOWN_DIR="${BASH_REMATCH[2]}"
-fi
-
-# Check we were given a directory to download to
-if [ "$DOWN_DIR" = "" ]; then
-	echo "Download directory is required, please specify with the --directory or -d flag"
-	exit 1
-fi
-
-# Append the repos name to the download path
+# Extract repository name from the URL
+REPO_NAME=$(basename -s .git "$REPO_URL")
 DOWN_DIR="$DOWN_DIR/$REPO_NAME"
 
-# Check if that directory already exists
+# Confirm overwrite if the directory exists
 if [[ -d "$DOWN_DIR" ]]; then
-	# Check its ok to overwrite this directory
-	read -r -p "$DOWN_DIR already exists, overwrite? [y/N] " DOWN_DIR_DELETE
-	DOWN_DIR_DELETE=${DOWN_DIR_DELETE,,}    # tolower
-	if [[ $DOWN_DIR_DELETE =~ ^(yes|y)$ ]]; then
-		echo "Deleting $DOWN_DIR"
-		rm -rf "$DOWN_DIR"
-	else
-		exit 0
-	fi
+    read -r -p "$DOWN_DIR already exists. Overwrite? [y/N] " response
+    response=${response,,} # Convert to lowercase
+    if [[ "$response" =~ ^(yes|y)$ ]]; then
+        echo "Deleting $DOWN_DIR"
+        rm -rf "$DOWN_DIR"
+    else
+        echo "Aborting."
+        exit 1
+    fi
 fi
 
-"$EXEC_GIT" clone -b "$REPO_BRANCH" --single-branch "$REPO_URL" "$DOWN_DIR"
+# Clone the repository
+echo "Cloning branch '$REPO_BRANCH' of '$REPO_URL' into '$DOWN_DIR'..."
+if ! git clone -b "$REPO_BRANCH" --single-branch "$REPO_URL" "$DOWN_DIR"; then
+    echo "Error: Failed to clone repository."
+    exit 1
+fi
 
-# Remove the .git directory
-rm -rf "$DOWN_DIR/.git"
+# Remove .git directory if it exists
+if [[ -d "$DOWN_DIR/.git" ]]; then
+    echo "Removing .git directory..."
+    rm -rf "$DOWN_DIR/.git"
+fi
+
+echo "Download completed successfully."
